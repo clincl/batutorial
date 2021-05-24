@@ -9,7 +9,7 @@ export class Post {
 
   @PrimaryKey()
   id!: number;
-
+  
   @Property({type: 'date'})
   createdAt: Date = new Date();
 
