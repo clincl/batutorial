@@ -1,19 +1,9 @@
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
 import { Post } from "./entities/Post";
-
+import microConfig from "./mikro-orm.config";
 const main = async () => {
-    const orm = await MikroORM.init({
-        entities: [],
-        dbName: 'lireddit',
-        user: 'postgres',
-        password: 'postgres',
-        type: 'postgresql',
-        // Set debugging to true when we are not in production/we are in deveopment
-        debug: !__prod__,
-        // Use standard errors instead of MikroORM throwing theeZZ
-        discovery: { warnWhenNoEntities: false },
-    })
+    const orm = await MikroORM.init(microConfig)
     // Creates an instance of post.
     const post = orm.em.create(Post, {title:'my first post'})
     // const post = new Post({'my first post'})
