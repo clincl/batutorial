@@ -4,6 +4,7 @@ import { Post } from "./entities/Post";
 import path from "path";
 
 export default {
+    // run npx mikro-orm migration:create after adding migrations
     migrations: {
         path: path.join(__dirname, './migrations'), // path to the folder with migrations
         pattern: /^[\w-]+\d+\.[tj]s$/, // regex pattern for the migration files
