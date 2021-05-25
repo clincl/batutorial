@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
 import { Post } from "./entities/Post";
@@ -6,6 +7,8 @@ import express from 'express'
 import {ApolloServer} from 'apollo-server-express'
 import {buildSchema} from 'type-graphql'
 import { HelloResolver } from "./resolvers/hello";
+import { PostResolver } from "./resolvers/post";
+
 const main = async () => {
     // Connect to the database
     const orm = await MikroORM.init(microConfig)
@@ -19,10 +22,15 @@ const main = async () => {
     const apolloServer = new ApolloServer ({
         // buildSchema() -> Promise (so await it)
         schema: await buildSchema({
-            resolvers: [HelloResolver],
+            resolvers: [HelloResolver, PostResolver],
             // uses class validation by default
             validate: false
-        })
+        }),
+        // Context is an object accessible by all resolvers
+        // No need for orm, just em object
+        // Function that returns an object for the context
+        // Can also get req, res from express
+        context: () => ({em: orm.em})
     });
     // Creates a GraphQL endpoint on express
     apolloServer.applyMiddleware({app})
