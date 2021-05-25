@@ -3,7 +3,9 @@ import { __prod__ } from "./constants";
 import { Post } from "./entities/Post";
 import microConfig from "./mikro-orm.config";
 import express from 'express'
-
+import {ApolloServer} from 'apollo-server-express'
+import {buildSchema} from 'type-graphql'
+import { HelloResolver } from "./resolvers/hello";
 const main = async () => {
     // Connect to the database
     const orm = await MikroORM.init(microConfig)
@@ -14,6 +16,16 @@ const main = async () => {
     app.get('/',(_,res)=>{
         res.send("hello")
     })
+    const apolloServer = new ApolloServer ({
+        // buildSchema() -> Promise (so await it)
+        schema: await buildSchema({
+            resolvers: [HelloResolver],
+            // uses class validation by default
+            validate: false
+        })
+    });
+    // Creates a GraphQL endpoint on express
+    apolloServer.applyMiddleware({app})
     app.listen(4000, () => {
         console.log('servr has started on localhost:4000');
     })
